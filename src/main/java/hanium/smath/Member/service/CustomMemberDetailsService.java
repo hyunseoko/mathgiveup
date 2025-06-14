@@ -1,53 +1,46 @@
 package hanium.smath.Member.service;
 
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.Query;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
 import hanium.smath.Member.entity.Member;
+import hanium.smath.Member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-@Service
+@Service("customMemberDetailsService")
 public class CustomMemberDetailsService implements UserDetailsService {
 
-    private final Firestore firestore;
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public CustomMemberDetailsService(Firestore firestore) {
-        this.firestore = firestore;
+    public CustomMemberDetailsService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        try {
-            System.out.println("Fetching member with login_id: " + username);
-            Query query = firestore.collection("Members").whereEqualTo("login_id", username);
-            QuerySnapshot querySnapshot = query.get().get();
+        Member member = memberRepository.findByLoginId(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with loginId: " + username));
 
-            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-            if (documents.isEmpty()) {
-                System.out.println("User not found with login_id: " + username);
-                throw new UsernameNotFoundException("User not found");
-            }
+        List<GrantedAuthority> authorities = new ArrayList<>();
 
-            Member member = documents.get(0).toObject(Member.class);
-            System.out.println("User found: " + member.getLogin_id());
-
-            return User.builder()
-                    .username(member.getLogin_id())
-                    .password(member.getLogin_pwd())
-                    .build();
-        } catch (InterruptedException | ExecutionException e) {
-            System.err.println("Error fetching member: " + e.getMessage());
-            throw new RuntimeException(e);
+        // 아이디가 "admin"일 경우 관리자로 설정하고, USER 권한을 생략
+        if ("admin".equals(username)) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else {
+            // 기본 권한을 USER로 설정
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
+
+        System.out.println("User found: " + member.getLoginId() + ", with authorities: " + authorities);
+
+        return new User(member.getLoginId(), member.getLoginPwd(), authorities);
     }
 }

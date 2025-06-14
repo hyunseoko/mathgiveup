@@ -44,3 +44,4 @@ out/
 
 build
 serviceAccountKey
+application.properties

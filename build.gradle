@@ -8,7 +8,7 @@ group = 'hanium'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '21'
 }
 
 repositories {
@@ -20,36 +20,83 @@ repositories {
 }
 
 dependencies {
+    // Spring Boot Starter Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // MySQL and JPA dependencies
+    implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'com.h2database:h2'
-    implementation 'com.google.firebase:firebase-admin:9.2.0'
-    implementation 'com.google.cloud:google-cloud-firestore:3.15.4'
+
+    // Jackson for JSON processing
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3'
+
+    // Spring Boot Starter Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Spring Boot Starter Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'jakarta.mail:jakarta.mail-api:2.0.1'
+    implementation 'jakarta.activation:jakarta.activation-api:2.0.1'
+    implementation 'com.sun.mail:jakarta.mail:2.0.1'
 
+    // Spring Boot Security and OAuth2
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // JWT dependencies
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    // Lombok for reducing boilerplate code
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'com.google.auth:google-auth-library-oauth2-http:1.20.0' // 최신 버전 사용
-    implementation 'com.google.api-client:google-api-client:1.32.2'
-    implementation 'com.google.http-client:google-http-client-jackson2:1.40.1'
+    // Spring Boot Starter Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'io.projectreactor:reactor-test'
 
-    implementation 'com.google.auth:google-auth-library-credentials:1.20.0'  // 추가
+    // JAXB for XML processing
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
 
+    // .env file support
     implementation 'io.github.cdimascio:java-dotenv:5.2.2'
 
-    implementation 'com.google.apis:google-api-services-indexing:v3-rev20200804-1.32.1'
+    // Spring WebFlux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.projectreactor:reactor-core'
 
+    // Google OAuth2 dependencies
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.14.0'
     implementation 'com.google.api-client:google-api-client:1.32.2'
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.32.1'
-    implementation 'com.google.oauth-client:google-oauth-client:1.32.1'
     implementation 'com.google.http-client:google-http-client-jackson2:1.40.1'
+    implementation 'com.google.auth:google-auth-library-credentials:1.20.0'
+    implementation 'com.google.apis:google-api-services-indexing:v3-rev20200804-1.32.1'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.32.1'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
+//    //kakao
+//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+    // 실시간 게임
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2020.0.3"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation"
 }
 
 tasks.named('test') {
