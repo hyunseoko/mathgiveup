@@ -36,7 +36,7 @@
 ### S/W 개발환경
 - **OS**: Android  
 - **개발환경(IDE)**: VS Code, IntelliJ, Android Studio, AWS, Spring  
-- **개발도구**: ChatGPT, WolframAlpha API, MySQL, Postman, XCode  
+- **개발도구**: WolframAlpha API, MySQL, Postman, XCode  
 - **개발언어**: Dart, Java  
 - **기타**: Figma (UI/UX)  
 
@@ -48,4 +48,5 @@
 |------|------|--------|
 | 김채린 | Back-End Developer | [@chaeelin](https://github.com/chaeelin) |
 | 고현서 | Back-End Developer | [@hyunseoko](https://github.com/hyunseoko) |
+
 
